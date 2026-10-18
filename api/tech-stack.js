@@ -5,6 +5,8 @@ import { chromium, isBrowserMissing } from './_common/browser.js';
 // Wappalyzer reads CHROMIUM_BIN at module load, so we must resolve
 // the path before importing it (hence the dynamic import in the handler)
 const ensureChromiumBin = async () => {
+  // Wappalyzer's default args (--single-process, a /tmp profile) crash desktop Chrome on Windows
+  if (process.platform === 'win32') process.env.CHROMIUM_ARGS ??= '--headless --disable-gpu';
   if (process.env.CHROMIUM_BIN) return;
   const envPath = process.env.CHROME_PATH || process.env.PUPPETEER_EXECUTABLE_PATH;
   if (envPath) {
