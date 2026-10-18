@@ -1,6 +1,7 @@
 import { randomUUID } from 'crypto';
 import { execFile } from 'child_process';
 import { promises as fs } from 'fs';
+import os from 'os';
 import path from 'path';
 import middleware from './_common/middleware.js';
 import { createLogger } from './_common/logger.js';
@@ -14,8 +15,8 @@ const SCREENSHOT_TIMEOUT = parseInt(process.env.PUBLIC_API_TIMEOUT_LIMIT || '400
 
 // Screenshot via the system Chromium binary
 const directChromiumScreenshot = async (url) => {
-  const tmpDir = '/tmp';
-  const screenshotPath = path.join(tmpDir, `screenshot-${randomUUID()}.png`);
+  // /tmp on Linux and serverless, %TEMP% on Windows
+  const screenshotPath = path.join(os.tmpdir(), `screenshot-${randomUUID()}.png`);
   log.debug(`direct method, saving to ${screenshotPath}`);
 
   const chromePath = process.env.CHROME_PATH || '/usr/bin/chromium';

@@ -5,7 +5,9 @@ export const chromium = sparticuz.default || sparticuz;
 
 // Serverless launch args, minus the ones that turn off same-origin rules
 const UNSAFE_ARGS = ['--disable-web-security', '--allow-running-insecure-content'];
-const ARGS = chromium.args.filter((arg) => !UNSAFE_ARGS.includes(arg));
+// Desktop Chrome on Windows crashes with them (--single-process, --no-zygote), so it gets none
+const ARGS =
+  process.platform === 'win32' ? [] : chromium.args.filter((arg) => !UNSAFE_ARGS.includes(arg));
 
 // Pick Chromium: CHROME_PATH, puppeteer's copy when self-hosted, or the serverless build
 const chromiumPath = async () => {
